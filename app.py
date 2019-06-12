@@ -20,8 +20,7 @@ import os
 
 app = Flask(__name__)
 parser = argparse.ArgumentParser(description="FuchiCorp Webplarform Application.")
-parser.add_argument("--debug", action='store_true',
-                        help="Run Application on developer mode.")
+parser.add_argument("--debug",  help="Run Application on developer mode.")
 
 args = parser.parse_args()
 def app_set_up():
@@ -31,11 +30,14 @@ def app_set_up():
         Applicaion will run on debug mode and local mode.
         It's useful when you are developing application on localhost
 
-        config-file: /Users/fsadykov/backup/databases/config.cfg
+        config-file: /Users/abdugofir/backup/databases/config.cfg
 
     """
-    if args.debug:
+    if args.debug == 'abdugofir':
+        ## To testing I create my own config make sure you have configured ~/.kube/config
+        app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
 
+    elif args.debug == 'fsadykov':
         ## To testing I create my own config make sure you have configured ~/.kube/config
         app.config.from_pyfile('/Users/fsadykov/backup/databases/config.cfg')
 
@@ -45,7 +47,7 @@ def app_set_up():
         app.config.from_pyfile('config.cfg')
         os.system('sh bash/bin/getServiceAccountConfig.sh')
 
-# app.config.from_pyfile('/Users/fsadykov/backup/databases/config.cfg')
+# app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
 app_set_up()
 db = SQLAlchemy(app)
 
