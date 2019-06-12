@@ -102,12 +102,6 @@ class Pynote(db.Model):
 
 ### Api Block starts from here ####
 
-@app.route('/api/example-users', methods=['GET', 'POST'])
-@login_required
-def example():
-    with open('api/examples/example.json') as file:
-        data = json.load(file)
-    return jsonify(data)
 
 @app.route('/api/users', methods=['GET'])
 def api_users():
