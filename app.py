@@ -1,3 +1,4 @@
+
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, redirect, url_for, request, jsonify, json, session
@@ -7,6 +8,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import SecureForm
 from kubernetes.client.apis import core_v1_api
 from flask_sqlalchemy  import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
 from kubernetes  import client, config
 from os import path
 import subprocess
@@ -17,11 +19,11 @@ import yaml
 import time
 import os
 
-
+auth = HTTPBasicAuth()
 app = Flask(__name__)
 parser = argparse.ArgumentParser(description="FuchiCorp Api Application.")
 parser.add_argument("--debug",  help="Run Application on developer mode.")
-
+version = 'v0.1'
 args = parser.parse_args()
 def app_set_up():
     """
@@ -48,8 +50,10 @@ def app_set_up():
         os.system('sh bash/bin/getServiceAccountConfig.sh')
 
 # app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
-app_set_up()
+# app_set_up()
+app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
 db = SQLAlchemy(app)
+
 
 env = app.config.get('BRANCH_NAME')
 if env == 'master':
@@ -65,6 +69,13 @@ api = core_v1_api.CoreV1Api()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username = username).first()
+    if not user or not user.verify_password(password):
+        return False
+    return True
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -85,6 +96,12 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(80))
     status = db.Column(db.String(5))
     role = db.Column(db.String(20))
+    def verify_password(self, password):
+        if password == self.password:
+            return True
+        else:
+            return False
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -103,12 +120,18 @@ class Pynote(db.Model):
 ### Api Block starts from here ####
 
 
-@app.route('/api/users', methods=['GET'])
+@app.route(f'/{version}/users', methods=['GET'])
 def api_users():
-    with open('api/examples/example.json') as file:
-        data = json.load(file)
-    return jsonify(data)
+    users = User.query.all()
+    return_object = []
+    for user in users:
+        return_object.append({'password': user.password, 'username': user.username, 'email': user.email, 'status': user.status, 'role': user.role})
+    return jsonify(return_object)
 
+@app.route('/hello', methods=['GET'])
+@auth.login_required
+def hello():
+    return "hello"
 
 if __name__ == '__main__':
     db.create_all()
