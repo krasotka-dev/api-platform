@@ -17,6 +17,7 @@ import smtplib
 import random
 import yaml
 import time
+import uuid
 import os
 
 auth = HTTPBasicAuth()
@@ -50,8 +51,8 @@ def app_set_up():
         os.system('sh bash/bin/getServiceAccountConfig.sh')
 
 # app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
+app.config.from_pyfile('/Users/fsadykov/backup/databases/config.cfg')
 # app_set_up()
-app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
 db = SQLAlchemy(app)
 
 
@@ -97,7 +98,7 @@ class User(UserMixin, db.Model):
     status = db.Column(db.String(5))
     role = db.Column(db.String(20))
     def verify_password(self, password):
-        if password == self.password:
+        if check_password_hash(self.password, password):
             return True
         else:
             return False
@@ -115,12 +116,30 @@ class Pynote(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+class ExampleUsers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id     = db.Column(db.String(100), unique=True)
+    firstname   = db.Column(db.String(15))
+    lastname    = db.Column(db.String(15))
+    username    = db.Column(db.String(30), unique=True)
+    email       = db.Column(db.String(50), unique=True)
+    password    = db.Column(db.String(50))
+    status      = db.Column(db.String(50), unique=True)
+    email_confm = db.Column(db.Integer, unique=True)
+    def verify_password(self, password):
+        if check_password_hash(self.password, password):
+            return True
+        else:
+            return False
+
+    def __repr__(self):
+        return '<User %r>' % self.username
 
 
 ### Api Block starts from here ####
 
-
 @app.route(f'/{version}/users', methods=['GET'])
+@auth.login_required
 def api_users():
     users = User.query.all()
     return_object = []
@@ -128,10 +147,122 @@ def api_users():
         return_object.append({'password': user.password, 'username': user.username, 'email': user.email, 'status': user.status, 'role': user.role})
     return jsonify(return_object)
 
-@app.route('/hello', methods=['GET'])
-@auth.login_required
-def hello():
-    return "hello"
+
+#### Get list of example users
+@app.route(f'/{version}/example/users', methods=['GET'])
+def get_example_users():
+    users = ExampleUsers.query.all()
+    return_object = []
+    for user in users:
+        return_object.append({
+        'UUID': user.user_id,
+        'password' : user.password,
+        'firstname' : user.firstname,
+        'lastname' : user.lastname,
+        'username' : user.username,
+        'email' : user.email,
+        'status' : user.status})
+    return jsonify(return_object)
+
+
+## Create an example user
+@app.route(f'/{version}/create_example/user', methods=['POST'])
+def create_example_users():
+    """
+        This page has been created for FuchiCorp members. In this page user should be able to create user.
+         keys:
+             firstname lastname email username password
+         response:
+            <User has been created!!>
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.data)
+        except Exception as err:
+            return jsonify({"message": "Erro {}".format(err)})
+        try:
+            data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
+            if not data_base_user:
+                new_user = ExampleUsers(username=data['username'], password=generate_password_hash(data['password'], method='sha256'),
+                firstname=data['firstname'], lastname=data['lastname'], email=data['email'], user_id=str(uuid.uuid1()), status=False)
+                db.session.add(new_user)
+                db.session.commit()
+                return jsonify({'message': 'User has been created!!'})
+
+            return jsonify({'message': 'User already exist in system!!'})
+        except Exception as err:
+            return jsonify({"message": "Missing key {}".format(err)})
+
+
+
+
+## Create an example user
+@app.route(f'/{version}/update_example/user/<user_id>', methods=['PUT'])
+def update_example_users(user_id=None):
+    """
+        This page has been created for FuchiCorp members. In this page user should be able to update user.
+         keys:
+             firstname lastname email username password
+         response:
+            <User information has been updated!!>
+    """
+    try:
+        data = json.loads(request.data)
+    except Exception as err:
+        return jsonify({"message": "Erro {}".format(err)})
+    try:
+        data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
+
+        if data_base_user:
+            if data_base_user.username == data['username'] and data_base_user.verify_password(data['password']):
+                data_base_user.username=data['username']
+                data_base_user.password=generate_password_hash(data['password'], method='sha256')
+                data_base_user.firstname=data['firstname']
+                data_base_user.lastname=data['lastname']
+                data_base_user.email=data['email']
+                db.session.commit()
+                return jsonify({'message': 'User information has been updated!!'})
+            else:
+                return jsonify({"message": "User name or password is invalid"})
+
+        return jsonify({'message': 'User already exist in system!!'})
+    except Exception as err:
+        return jsonify({"message": "Missing key {}".format(err)})
+
+
+
+
+## Delete an example user
+@app.route(f'/{version}/delete_example/user/<user_id>', methods=['DELETE'])
+def delete_example_user(user_id=None):
+    """
+        This page has been created for FuchiCorp members. In this page user should be able to delete user.
+        path:
+            <version>/delete_example/user/<user_id>
+        keys:
+             username password
+        200 response:
+            <User has been deleted!!>
+    """
+    try:
+        data = json.loads(request.data)
+    except Exception as err:
+        return jsonify({"message": "Error reading JSON data {}".format(err)})
+
+    try:
+        data_base_user = ExampleUsers.query.filter_by(user_id=user_id).first()
+        if data_base_user:
+            if data_base_user.username == data['username'] and data_base_user.verify_password(data['password']):
+                db.session.delete(data_base_user)
+                db.session.commit()
+                return jsonify({"message": "User has been deleted!!", "user_id": user_id})
+            else:
+                return jsonify({"message": "User name or password is invalid"})
+
+    except Exception as err:
+        return jsonify({"message": "Missing key {}".format(err)})
+    return jsonify({"message": f"User not found"})
+
 
 if __name__ == '__main__':
     db.create_all()
