@@ -2,10 +2,6 @@
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, redirect, url_for, request, jsonify, json, session
-from flask_admin import Admin, AdminIndexView, BaseView, expose, helpers
-from flask_admin.helpers  import is_form_submitted
-from flask_admin.contrib.sqla import ModelView
-from flask_admin.form import SecureForm
 from kubernetes.client.apis import core_v1_api
 from flask_sqlalchemy  import SQLAlchemy
 from flask_httpauth import HTTPBasicAuth
@@ -123,7 +119,7 @@ class ExampleUsers(db.Model):
     username    = db.Column(db.String(30), unique=True)
     email       = db.Column(db.String(50), unique=True)
     password    = db.Column(db.String(50))
-    status      = db.Column(db.String(50), unique=True)
+    status      = db.Column(db.String(10))
     email_confm = db.Column(db.Integer, unique=True)
     def verify_password(self, password):
         if check_password_hash(self.password, password):
@@ -174,23 +170,23 @@ def create_example_users():
          response:
             <User has been created!!>
     """
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.data)
-        except Exception as err:
-            return jsonify({"message": "Erro {}".format(err)})
-        try:
-            data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
-            if not data_base_user:
-                new_user = ExampleUsers(username=data['username'], password=generate_password_hash(data['password'], method='sha256'),
-                firstname=data['firstname'], lastname=data['lastname'], email=data['email'], user_id=str(uuid.uuid1()), status=False)
-                db.session.add(new_user)
-                db.session.commit()
-                return jsonify({'message': 'User has been created!!'})
+    try:
+        data = json.loads(request.data)
+    except Exception as err:
+        return jsonify({"message": "Erro {}".format(err)})
+    try:
+        data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
+        if not data_base_user:
 
-            return jsonify({'message': 'User already exist in system!!'})
-        except Exception as err:
-            return jsonify({"message": "Missing key {}".format(err)})
+            new_user = ExampleUsers(username=data['username'], password=generate_password_hash(data['password'], method='sha256'),
+            firstname=data['firstname'], lastname=data['lastname'], email=data['email'], user_id=str(uuid.uuid4()), status=False)
+            db.session.add(new_user)
+            db.session.commit()
+            return jsonify({'message': 'User has been created!!'})
+
+        return jsonify({'message': 'User already exist in system!!'})
+    except Exception as err:
+        return jsonify({"message": "Missing key {}".format(err)})
 
 
 
