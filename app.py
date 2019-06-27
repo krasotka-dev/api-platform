@@ -143,6 +143,18 @@ def api_users():
         return_object.append({'password': user.password, 'username': user.username, 'email': user.email, 'status': user.status, 'role': user.role})
     return jsonify(return_object)
 
+#### Get list of example users
+@app.route('/', methods=['GET'])
+def index():
+    object = {
+    "message": "Welcome to FuchiCorp API",
+    "status" : 200,
+    "anonymus": True,
+    "owner": "Farkhod Sadykov",
+    "email": "fuchicorpsolution@gmail.com"
+    }
+    return jsonify(object)
+
 
 #### Get list of example users
 @app.route(f'/{version}/example/users', methods=['GET'])
