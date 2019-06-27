@@ -44,6 +44,7 @@ def app_set_up():
 
         ## To different enviroments enable this
         app.config.from_pyfile('config.cfg')
+        os.system('sh bash/bin/getServiceAccountConfig.sh')
 
 # app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
 # app.config.from_pyfile('/Users/fsadykov/backup/databases/config.cfg')
