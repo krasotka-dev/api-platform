@@ -147,12 +147,12 @@ def api_users():
 @app.route('/', methods=['GET'])
 def index():
     object = {
-    "message": "Welcome to FuchiCorp API",
-    "status" : 200,
-    "anonymus": True,
-    "owner": "Farkhod Sadykov",
-    "email": "fuchicorpsolution@gmail.com"
-    }
+        "message": "Welcome to FuchiCorp API",
+        "status" : 200,
+        "anonymus": True,
+        "owner": "Farkhod Sadykov",
+        "email": "fuchicorpsolution@gmail.com"
+        }
     return jsonify(object)
 
 
@@ -188,10 +188,13 @@ def create_example_users():
     except Exception as err:
         return jsonify({"message": "Erro {}".format(err)})
     try:
+
         data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
         if not data_base_user:
-
-            new_user = ExampleUsers(username=data['username'], password=generate_password_hash(data['password'], method='sha256'),
+            generated_password = generate_password_hash(data['password'], method='sha256')
+            print(data['password'])
+            print(generated_password)
+            new_user = ExampleUsers(username=data['username'], password=generated_password,
             firstname=data['firstname'], lastname=data['lastname'], email=data['email'], user_id=str(uuid.uuid4()), status=False)
             db.session.add(new_user)
             db.session.commit()
