@@ -15,6 +15,8 @@ import yaml
 import time
 import uuid
 import os
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 auth = HTTPBasicAuth()
 app = Flask(__name__)
