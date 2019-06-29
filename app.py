@@ -190,7 +190,7 @@ def create_example_users():
     except Exception as err:
         return jsonify({"message": "Erro {}".format(err)})
     try:
-
+        print(data)
         data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
         if not data_base_user:
             generated_password = generate_password_hash(data['password'], method='sha256')
