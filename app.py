@@ -16,10 +16,10 @@ import time
 import uuid
 import os
 import logging
-logging.basicConfig(level=logging.DEBUG)
 
 auth = HTTPBasicAuth()
 app = Flask(__name__)
+logger = logging.getLogger()
 parser = argparse.ArgumentParser(description="FuchiCorp Api Application.")
 parser.add_argument("--debug",  help="Run Application on developer mode.")
 version = 'v0.1'
@@ -192,12 +192,12 @@ def create_example_users():
     except Exception as err:
         return jsonify({"message": "Erro {}".format(err)})
     try:
-        print(data)
+        logger.warning(data)
         data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
         if not data_base_user:
             generated_password = generate_password_hash(data['password'], method='sha256')
-            print(data['password'])
-            print(generated_password)
+            logger.warning(data['password'])
+            logger.warning(generated_password)
             new_user = ExampleUsers(username=data['username'], password=generated_password,
             firstname=data['firstname'], lastname=data['lastname'], email=data['email'], user_id=str(uuid.uuid4()), status=False)
             db.session.add(new_user)
