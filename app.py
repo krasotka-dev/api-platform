@@ -121,12 +121,10 @@ class ExampleUsers(db.Model):
     lastname    = db.Column(db.String(15))
     username    = db.Column(db.String(30), unique=True)
     email       = db.Column(db.String(50), unique=True)
-    password    = db.Column(db.String(50))
+    password    = db.Column(db.String(200))
     status      = db.Column(db.String(10))
     email_confm = db.Column(db.Integer, unique=True)
     def verify_password(self, password):
-        print(f'Checking password {self.password}')
-        print(f'Your passsword {password}')
         if check_password_hash(self.password, password):
             return True
         else:
@@ -192,12 +190,9 @@ def create_example_users():
     except Exception as err:
         return jsonify({"message": "Erro {}".format(err)})
     try:
-        logger.warning(data)
         data_base_user = ExampleUsers.query.filter_by(username=data['username']).first()
         if not data_base_user:
             generated_password = generate_password_hash(data['password'], method='sha256')
-            logger.warning(data['password'])
-            logger.warning(generated_password)
             new_user = ExampleUsers(username=data['username'], password=generated_password,
             firstname=data['firstname'], lastname=data['lastname'], email=data['email'], user_id=str(uuid.uuid4()), status=False)
             db.session.add(new_user)
@@ -281,4 +276,4 @@ def delete_example_user(user_id=None):
 
 if __name__ == '__main__':
     db.create_all()
-    app.run(port=5000, host='0.0.0.0', debug=True)
+    app.run(port=5000, host='0.0.0.0')
