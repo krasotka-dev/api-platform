@@ -122,7 +122,9 @@ class ExampleUsers(db.Model):
     password    = db.Column(db.String(50))
     status      = db.Column(db.String(10))
     email_confm = db.Column(db.Integer, unique=True)
-    def verify_password(self.password, password):
+    def verify_password(self, password):
+        print(f'Checking password {self.password}')
+        print(f'Your passsword {password}')
         if check_password_hash(self.password, password):
             return True
         else:
