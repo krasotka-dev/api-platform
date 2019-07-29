@@ -61,9 +61,9 @@ else:
     enviroment = env
 
 ## Loading the Kubernetes configuration
-config.load_kube_config()
-kube = client.ExtensionsV1beta1Api()
-api = core_v1_api.CoreV1Api()
+# config.load_kube_config()
+# kube = client.ExtensionsV1beta1Api()
+# api = core_v1_api.CoreV1Api()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
