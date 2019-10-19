@@ -18,6 +18,10 @@ variable "deployment_image" {
 variable "deployment_environment" {
   default = "dev"
 }
+variable "deployment_environment" {
+    default = "qa"
+  
+}
 
 
 variable "deployment_endpoint" {
