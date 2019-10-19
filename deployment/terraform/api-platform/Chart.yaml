@@ -7,7 +7,7 @@ kubeVersion: v1.13.10-gke.0
 keywords:
   - app
   - python
-home: https://github.com/fuchicorp/api-platform.git
+home: https://github.com/fuchicorp/api-platform
 sources:
   - https://github.com/fuchicorp/api-platform.git
 maintainers:
