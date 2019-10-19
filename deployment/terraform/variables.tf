@@ -28,3 +28,4 @@ variable "deployment_endpoint" {
     prod = "api-platforms.fuchicorp.com"
   }
 }
+
