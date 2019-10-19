@@ -3,3 +3,16 @@ appVersion: "1.0"
 description: A Helm chart for Kubernetes
 name: api-webplatform
 version: 0.1.0
+kubeVersion: v1.13.10-gke.0
+keywords:
+  - app
+  - python
+home: https://github.com/fuchicorp/exam-platform
+sources:
+  - https://github.com/fuchicorp/exam-platform.git
+maintainers:
+  - name: FuchiCorp
+    email: fuchicorpsolution@gmail.com
+    url: https://github.com/fuchicorp
+icon: https://avatars3.githubusercontent.com/u/46357473?s=200&v=4
+tillerVersion: v2.11.0
