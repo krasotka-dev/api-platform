@@ -10,7 +10,7 @@ data "template_file" "api-platform_values" {
 
 resource "local_file" "api-platform_values_local_file" {
   content  = "${trimspace(data.template_file.api-platform_values.rendered)}"
-  filename = "./chart-cloud/.cache/values.yaml"
+  filename = "./api-platform/.cache/values.yaml"
 }
 resource "helm_release" "api-platform" {
   name       = "${var.name}"
