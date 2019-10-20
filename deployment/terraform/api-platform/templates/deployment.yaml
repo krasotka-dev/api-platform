@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ include "api-platform.fullname" . }}
@@ -19,19 +19,29 @@ spec:
         app.kubernetes.io/name: {{ include "api-platform.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-{{- if .Values.imagePullSecrets.enabled }}
+{{- if .Values.imageSecret.enabled }}
       imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets.allSecrets | indent 12 }}
+{{ toYaml .Values.imageSecret.allSecrets | indent 12 }}
 {{- end }}
-
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}"
+          image: {{ .Values.image.repository }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - python
+            - /app/app.py
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 5000
               protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

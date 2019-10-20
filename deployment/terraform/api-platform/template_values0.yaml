@@ -1,4 +1,4 @@
-# Default values for api-webplatform.
+# Default values for api-platform.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: docker.fuchicorp.com/api-platform-dev:0.17
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
@@ -14,19 +14,21 @@ fullnameOverride: ""
 service:
   type: ClusterIP
   port: 80
+  targetPort: 5000
 
 ingress:
   enabled: true
-  annotations: 
-      kubernetes.io/ingress.class: nginx
-      certmanager.k8s.io/cluster-issuer: letsencrypt-fuchicorp
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-fuchicorp-prod
+    kubernetes.io/tls-acme: "true"
   path: /
   hosts:
     - test-api.fuchicorp.com
-  tls: 
-     - secretName: api-webplatform-tls
-       hosts:
-        -  test-api.fuchicorp.com
+  tls:
+   - secretName: exam-tls
+     hosts:
+       - test-api.fuchicorp.com
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -40,13 +42,14 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
+imageSecret:
+  enabled: true
+  allSecrets:
+  - name: nexus-creds
+
+
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
-
-imagePullSecrets:
-  enabled: true
-  allSecrets:
-  - name: nexus-creds
