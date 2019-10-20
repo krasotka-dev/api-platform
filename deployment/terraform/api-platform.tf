@@ -2,7 +2,7 @@
 data "template_file" "api-platform_values" {
   template = "${file("./api-platform/template_values.yaml")}"
   vars = {
-    docker_image = "${var.deployment_image}"
+    deployment_image = "${var.deployment_image}"
     deployment_endpoint = "${lookup(var.deployment_endpoint, "${var.deployment_environment}")}"
 
   }
