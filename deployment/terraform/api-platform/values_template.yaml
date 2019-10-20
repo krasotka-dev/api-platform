@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: docker.fuchicorp.com/api-platform-dev:0.17
+  repository: ${docker_image}
   pullPolicy: Always
 
 nameOverride: ""
@@ -22,11 +22,11 @@ ingress:
       certmanager.k8s.io/cluster-issuer: letsencrypt-fuchicorp
   path: /
   hosts:
-    - test-api.fuchicorp.com
+    - ${deployment_endpoint}
   tls: 
      - secretName: api-webplatform-tls
        hosts:
-        -  test-api.fuchicorp.com
+        - ${deployment_endpoint}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
