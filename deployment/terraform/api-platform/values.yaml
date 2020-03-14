@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: docker.fuchicorp.com/api-platform-dev:0.17
+  repository: ${deployment_image}
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -24,11 +24,11 @@ ingress:
     kubernetes.io/tls-acme: "true"
   path: /
   hosts:
-    - test-api.fuchicorp.com
+    - ${deployment_endpoint}
   tls:
-   - secretName: exam-tls
+   - secretName: chart-api_platform-tls
      hosts:
-       - test-api.fuchicorp.com
+       - ${deployment_endpoint}
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
