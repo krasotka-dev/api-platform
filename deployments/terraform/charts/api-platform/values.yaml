@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: ${deployment_image}
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 nameOverride: ""
 fullnameOverride: ""
