@@ -21,39 +21,30 @@ auth = HTTPBasicAuth()
 app = Flask(__name__)
 logger = logging.getLogger()
 parser = argparse.ArgumentParser(description="FuchiCorp Api Application.")
-parser.add_argument("--debug",  help="Run Application on developer mode.")
+parser.add_argument("--debug", action='store_true', help="Run Application on developer mode.")
 version = 'v0.1'
 args = parser.parse_args()
 def app_set_up():
     """
-
         If parse --debug argument to the application.
         Applicaion will run on debug mode and local mode.
         It's useful when you are developing application on localhost
-
-        config-file: /Users/abdugofir/backup/databases/config.cfg
-
+        config-file: debug-config.cfg
     """
-    if args.debug == 'abdugofir':
-        ## To testing I create my own config make sure you have configured ~/.kube/config
-        app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
+    if args.debug:
 
-    elif args.debug == 'fsadykov':
         ## To testing I create my own config make sure you have configured ~/.kube/config
-        app.config.from_pyfile('/Users/fsadykov/backup/databases/config.cfg')
-
+        current_folder = os.getcwd()
+        app.config.from_pyfile(f'{current_folder}/debug-config.cfg')
+        # print('Using config: /Users/fsadykov/backup/databases/config.cfg')
     else:
 
         ## To different enviroments enable this
         app.config.from_pyfile('config.cfg')
         os.system('sh bash/bin/getServiceAccountConfig.sh')
 
-# app.config.from_pyfile('/Users/abdugofir/backup/databases/config.cfg')
-# app.config.from_pyfile('/Users/fsadykov/backup/databases/config.cfg')
 app_set_up()
 db = SQLAlchemy(app)
-
-
 env = app.config.get('BRANCH_NAME')
 if env == 'master':
     enviroment = 'prod'
@@ -276,4 +267,16 @@ def delete_example_user(user_id=None):
 
 if __name__ == '__main__':
     db.create_all()
+    if os.environ.get('ADMIN_USER') and os.environ.get('ADMIN_PASSWORD'):
+        if not User.query.filter_by(username=os.environ.get('ADMIN_USER')).first():
+            hashed_password = generate_password_hash(os.environ.get('ADMIN_PASSWORD'), method='sha256')
+            admin_user = User(username=os.environ.get('ADMIN_USER'), 
+            firstname='Admin', 
+            lastname='Adminov', 
+            email='admin@admin.com', 
+            password=hashed_password, 
+            status='enabled', role='admin')
+            db.session.add(admin_user)
+            db.session.commit()
+            logging.warning("Admin user has been created!!")
     app.run(port=5000, host='0.0.0.0')
