@@ -51,6 +51,14 @@ if env == 'master':
 else:
     enviroment = env
 
+def is_prod():
+    if enviroment.lower() != 'master':
+        return False
+    return True
+    
+if not is_prod():
+    app.testing = True
+
 ## Loading the Kubernetes configuration
 # config.load_kube_config()
 # kube = client.ExtensionsV1beta1Api()
