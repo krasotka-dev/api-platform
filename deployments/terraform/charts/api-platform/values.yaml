@@ -25,7 +25,7 @@ ingress:
   hosts:
     - ${deployment_endpoint}
   tls:
-   - secretName: chart-api_platform-tls
+   - secretName: chart-api-platform-tls
      hosts:
        - ${deployment_endpoint}
 
