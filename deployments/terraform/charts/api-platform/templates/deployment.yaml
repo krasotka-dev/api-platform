@@ -24,31 +24,31 @@ spec:
 {{ toYaml .Values.imageSecret.allSecrets | indent 12 }}
 {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: {{ .Values.image.repository }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - python
-            - /app/app.py
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - python
+        - /app/app.py
 {{- if .Values.globalEnvironments.enabled }}
         env:
 {{ toYaml .Values.globalEnvironments.environments | indent 8 }}
         - name: MYSQL_HOST
           value: {{ .Values.mysql.service.serviceName }}
 {{- end }}
-          ports:
-            - name: http
-              containerPort: 5000
-              protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          resources:
+        ports:
+          - name: http
+            containerPort: 5000
+            protocol: TCP
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: http
+        resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
