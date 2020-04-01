@@ -46,6 +46,32 @@ imageSecret:
   allSecrets:
   - name: nexus-creds
 
+mysql:
+  image:
+    repository: fsadykov/centos_mysql
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 3306
+    serviceName: academy-mysql-service
+
+
+globalEnvironments:
+  enabled: true
+  environments:
+
+  - name: MYSQL_USER
+    value: webplaformbbuser
+
+  - name: MYSQL_DATABASE
+    value: webplatformdb
+
+  - name: MYSQL_PASSWORD
+    value: lhMi4XrcnejG6mlcTglxt
+
+  - name: MYSQL_ROOT_PASSWORD
+    value: lhMi4XrcnejG6mlcTglxt
 
 nodeSelector: {}
 
