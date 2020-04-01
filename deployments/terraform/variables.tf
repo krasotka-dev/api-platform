@@ -21,8 +21,8 @@ variable "deployment_endpoint" {
   type = "map"
 
   default = {
-    dev  = "dev.api.fuchicorp.com"
-    qa   = "qa.api.fuchicorp.com"
-    prod = "api.fuchicorp.com"
+    dev  = "dev.academy.api.fuchicorp.com"
+    qa   = "qa.academy.api.fuchicorp.com"
+    prod = "academy.api.fuchicorp.com"
   }
 }
