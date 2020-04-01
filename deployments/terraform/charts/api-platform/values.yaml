@@ -54,7 +54,7 @@ mysql:
   service:
     type: ClusterIP
     port: 3306
-    serviceName: academy-mysql-service
+    serviceName: api-platform-mysql-service
 
 
 globalEnvironments:
