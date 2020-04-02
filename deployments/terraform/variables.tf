@@ -1,3 +1,20 @@
+variable "mysql_user" {
+  default = "webplaformbbuser"
+}
+
+variable "mysql_database" {
+  default = "webplatformdb"
+}
+
+variable "mysql_password" {
+  default = "lhMi4XrcnejG6mlcTglxt"
+}
+
+variable "mysql_root_password" {
+  default = "lhMi4XrcnejG6mlcTglxt"
+}
+
+
 variable "name" {
   default = "api-webplatform"
 }

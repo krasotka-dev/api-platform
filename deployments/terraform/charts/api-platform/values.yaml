@@ -61,17 +61,17 @@ globalEnvironments:
   enabled: true
   environments:
 
-  - name: MYSQL_USER
-    value: webplaformbbuser
+  - name: mysql_user
+    value: ${mysql_user}
 
-  - name: MYSQL_DATABASE
-    value: webplatformdb
+  - name: mysql_database
+    value: ${mysql_database}
 
-  - name: MYSQL_PASSWORD
-    value: lhMi4XrcnejG6mlcTglxt
+  - name: mysql_password
+    value: ${mysql_password}
 
-  - name: MYSQL_ROOT_PASSWORD
-    value: lhMi4XrcnejG6mlcTglxt
+  - name: mysql_root_password
+    value: ${mysql_root_password}
 
 nodeSelector: {}
 
