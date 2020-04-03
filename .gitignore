@@ -11,3 +11,4 @@
 webplatform.db
 debug-config.cfg
 .vscode/settings.json
+*.tfvars

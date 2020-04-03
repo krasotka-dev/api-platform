@@ -1,17 +1,17 @@
 variable "mysql_user" {
-  default = "webplaformbbuser"
+  default = "exampleuser"
 }
 
 variable "mysql_database" {
-  default = "webplatformdb"
+  default = "examplemdb"
 }
 
 variable "mysql_password" {
-  default = "lhMi4XrcnejG6mlcTglxt"
+  default = "examplePassword"
 }
 
 variable "mysql_root_password" {
-  default = "lhMi4XrcnejG6mlcTglxt"
+  default = "exampleRootPassword"
 }
 
 
