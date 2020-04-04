@@ -1,2 +1,6 @@
 .vscode/settings.json
+.vscode
 deployments/docker/debug-config.cfg
+deployments/selenium-api/.idea
+deployments/selenium-api/target
+deployments/selenium-api/selenium-api.iml
