@@ -11,10 +11,10 @@ import lombok.Data;
 public class RequestBody {
 
 
-    public boolean anonymus;
-    public String email;
-    public String message;
-    public String owner;
-    public int status;
+    private boolean anonymus;
+    private String email;
+    private String message;
+    private String owner;
+    private int status;
 
 }

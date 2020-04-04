@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
         features = "src/test/resources/features",
         glue = "steps",
         dryRun = true,
-        tags = "@createStudent")
+        tags = "@getMethod")
 
 public class CukesRunner {
+
 }
